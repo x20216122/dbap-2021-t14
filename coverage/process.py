@@ -17,24 +17,7 @@ import re
 import numpy
 from os import listdir
 from PIL import Image
-
-workingDir = '/var/data/david.mcnerney/Project/'
-
-def getCollection():
-    uri = "mongodb://x20216122:MpvRuzyAEjPCDmPJEq4uMvdV3K0cxUJX5IqNEfbbUqVfeGnjz2tPCEBplQUFAbg3VEzXJZnyQwMAnP1MbBykDQ==@x20216122.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@x20216122@"
-    client = pymongo.MongoClient(uri)
-    db = client['lp-daac']
-    return db['indices']
-
-def connect(db="x20216122"):
-    dbConnection = psycopg2.connect(
-        user = "postgres",
-        password = "postgres",
-        host = "192.168.0.24",
-        port = "5432",
-        database = db)
-    dbConnection.set_isolation_level(0) # AUTOCOMMIT
-    return dbConnection
+from config import *
 
 def initPolygons():
     polygons = []
@@ -49,9 +32,9 @@ def initPolygons():
                             'c':country['fields']['preferred_term'], 'p':p0, 'm':centroid(p0)})
                     else:
                         for p1 in p0:
-                                polygons.append({'id':country['fields']['iso3_code'],
-                                            'c':country['fields']['preferred_term'], \
-                                            'p':p1, 'm':centroid(p1)})
+                            polygons.append({'id':country['fields']['iso3_code'],
+                                  'c':country['fields']['preferred_term'], \
+                                  'p':p1, 'm':centroid(p1)})
                 except e:
                     print("Error:", country['fields']['preferred_term'], e)
 
@@ -246,7 +229,6 @@ except e:
 for nextTask in rows:
   print("Task", nextTask)
   pool.apply_async(processTask, args=(nextTask,), error_callback=err)
-  #processTask(nextTask)
 
 pool.close()
 pool.join()

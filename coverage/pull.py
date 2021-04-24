@@ -7,10 +7,9 @@ import time
 from bs4 import BeautifulSoup
 from requests.auth import HTTPBasicAuth
 from requests.exceptions import Timeout
+from config import *
 
-baseUrl='https://e4ftl01.cr.usgs.gov/MEASURES/GFCC30TC.003/2015.01.01/'
-workingDir = '/var/data/david.mcnerney/Project/'
-
+print("Get LP Daac index file")
 indexLocal = workingDir + "/" + os.path.basename('index.html')
 if os.path.exists(indexLocal):
     print('File exists: ' + indexLocal)
@@ -57,7 +56,8 @@ def fetchAll():
 while True:
   try:
     if (fetchAll() != True):
+      print("All files downloaded")
       break
-  except:
-    print("Ouch!");
+  except Exception as e:
+    print("Ouch!", e);
     time.sleep(600)

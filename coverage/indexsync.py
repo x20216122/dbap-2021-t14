@@ -3,26 +3,10 @@ import psycopg2
 from os import listdir
 import pymongo
 import xmltodict
-
-workingDir = '/var/data/david.mcnerney/Project/'
-
-def getCollection():
-    uri = "mongodb://x20216122:MpvRuzyAEjPCDmPJEq4uMvdV3K0cxUJX5IqNEfbbUqVfeGnjz2tPCEBplQUFAbg3VEzXJZnyQwMAnP1MbBykDQ==@x20216122.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@x20216122@"
-    client = pymongo.MongoClient(uri)
-    db = client['lp-daac']
-    return db['indices']
-
-def connect(db="x20216122"):
-    dbConnection = psycopg2.connect(
-        user = "postgres",
-        password = "postgres",
-        host = "192.168.0.24",
-        port = "5432",
-        database = db)
-    dbConnection.set_isolation_level(0) # AUTOCOMMIT
-    return dbConnection
+from config import *
 
 def syncIndexFiles():
+  print("Syncing index files")
   xmlFiles = []
 
   for f in listdir(workingDir):
@@ -44,6 +28,7 @@ def syncIndexFiles():
         collection.insert_one(json)
         
 def syncMapFiles():
+    print("Syncing map files")
     dbConnection = connect()
     try:
         dbCursor = dbConnection.cursor()
