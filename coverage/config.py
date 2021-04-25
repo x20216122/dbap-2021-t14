@@ -17,14 +17,3 @@ def connect():
     dbConnection.set_isolation_level(0) # AUTOCOMMIT
     return dbConnection
 
-country_codes=getCollection('Country Code', 'gdp').find()[0]
-print(country_codes)
-
-for year in range(1960,2020):
-  thisYear=getCollection(str(year), 'gdp').find()[0]
-  for cc in thisYear.keys():
-    INSERT INTO gdp (year, country_codes[cc], thisYear[cc])
-    insert into gdp values ('IRL', 2015, 123123423.44)
-
-
-

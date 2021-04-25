@@ -3,7 +3,20 @@ import psycopg2
 from os import listdir
 import pymongo
 import xmltodict
+import json
 from config import *
+
+def syncCountryData():
+    dbConnection = connect()
+    dbCursor = dbConnection.cursor()
+    dbCursor.execute("TRUNCATE country")
+    with open('world-administrative-boundaries-countries.json') as fp:
+        countries = json.load(fp)
+        for country in countries:
+            c=country['fields']
+            dbCursor.execute("INSERT INTO country (code, name) VALUES (%s, %s)", (c['iso3_code'],c['preferred_term']))
+
+    dbCursor.close()
 
 def syncIndexFiles():
   print("Syncing index files")
@@ -29,7 +42,6 @@ def syncIndexFiles():
         
 def syncMapFiles():
     print("Syncing map files")
-    dbConnection = connect()
     try:
         dbCursor = dbConnection.cursor()
         dbCursor.execute("select filename from mappingfile")
@@ -52,5 +64,6 @@ def syncMapFiles():
 
     dbCursor.close()
 
-syncIndexFiles()
-syncMapFiles()
+syncCountryData()
+#syncIndexFiles()
+#syncMapFiles()
